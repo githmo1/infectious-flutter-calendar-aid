@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { storage, AnimalSpecies, Drug, AdministrationRoute, Prescription } from '@/utils/storage';
 
 const DrugCalculator: React.FC = () => {
+  
   const [drugs, setDrugs] = useState<Drug[]>([]);
   const [selectedSpecies, setSelectedSpecies] = useState<AnimalSpecies>('cow');
   const [weight, setWeight] = useState('');
@@ -201,13 +201,18 @@ const DrugCalculator: React.FC = () => {
     }
   };
   
-  // Toggle route selection
+  // Toggle route selection - Fixed function
   const toggleRoute = (route: AdministrationRoute) => {
-    setDrugRoutes(prevRoutes => 
-      prevRoutes.includes(route)
-        ? prevRoutes.filter(r => r !== route)
-        : [...prevRoutes, route]
-    );
+    setDrugRoutes(prevRoutes => {
+      // Check if the route is already selected
+      if (prevRoutes.includes(route)) {
+        // If yes, remove it
+        return prevRoutes.filter(r => r !== route);
+      } else {
+        // If no, add it
+        return [...prevRoutes, route];
+      }
+    });
   };
   
   // Add drug to prescription
@@ -679,20 +684,30 @@ const DrugCalculator: React.FC = () => {
                   <div 
                     key={route.value}
                     className={`animal-option ${drugRoutes.includes(route.value) ? 'selected' : ''}`}
-                    onClick={() => toggleRoute(route.value)}
                   >
                     <div className="flex items-center space-x-2">
                       <Checkbox
+                        id={`route-${route.value}`}
                         checked={drugRoutes.includes(route.value)}
                         onCheckedChange={() => toggleRoute(route.value)}
                       />
-                      <Label className="cursor-pointer">{route.label}</Label>
+                      <Label 
+                        htmlFor={`route-${route.value}`}
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault(); 
+                          toggleRoute(route.value);
+                        }}
+                      >
+                        {route.label}
+                      </Label>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Form actions */}
             <div className="flex justify-end space-x-3">
               <Button 
                 type="button" 
