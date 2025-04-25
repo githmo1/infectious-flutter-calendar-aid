@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,15 +53,10 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				butterfly: {
+					DEFAULT: '#0EA5E9',
+					secondary: '#8B5CF6',
+					accent: '#22C55E'
 				}
 			},
 			borderRadius: {
@@ -84,11 +80,30 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'flutter': {
+					'0%': { transform: 'rotate(-5deg) scale(0.95)' },
+					'25%': { transform: 'rotate(0deg) scale(1)' },
+					'50%': { transform: 'rotate(5deg) scale(0.95)' },
+					'75%': { transform: 'rotate(0deg) scale(1)' },
+					'100%': { transform: 'rotate(-5deg) scale(0.95)' }
+				},
+				'pulse-dot': {
+					'0%': { transform: 'scale(0.95)', opacity: '1' },
+					'50%': { transform: 'scale(1.2)', opacity: '0.8' },
+					'100%': { transform: 'scale(0.95)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'flutter': 'flutter 3s ease-in-out infinite',
+				'pulse-dot': 'pulse-dot 2s ease-in-out infinite'
 			}
 		}
 	},
