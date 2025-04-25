@@ -1,17 +1,18 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import VaccinationCalendar from '@/components/VaccinationCalendar';
 import TestsHelper from '@/components/TestsHelper';
 import DrugCalculator from '@/components/DrugCalculator';
 import Credits from '@/components/Credits';
+import VaccineTypeManager from '@/components/VaccineTypeManager';
 import { initializeDemoData } from '@/utils/storage';
 import { requestNotificationPermission } from '@/utils/notifications';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('vaccination');
+  const [showVaccineTypes, setShowVaccineTypes] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  
+
   // Initialize dark mode from local storage
   useEffect(() => {
     const storedTheme = localStorage.getItem('infectious_butterfly_theme');
@@ -46,12 +47,30 @@ const Index = () => {
       localStorage.setItem('infectious_butterfly_theme', 'light');
     }
   };
-  
+
   // Render active tab content
   const renderTabContent = () => {
+    if (activeTab === 'vaccination') {
+      return (
+        <div>
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setShowVaccineTypes(!showVaccineTypes)}
+              className="bg-butterfly hover:bg-butterfly/90 text-white px-4 py-2 rounded"
+            >
+              {showVaccineTypes ? 'Show Calendar' : 'Manage Vaccine Types'}
+            </button>
+          </div>
+          {showVaccineTypes ? (
+            <VaccineTypeManager />
+          ) : (
+            <VaccinationCalendar />
+          )}
+        </div>
+      );
+    }
+
     switch (activeTab) {
-      case 'vaccination':
-        return <VaccinationCalendar />;
       case 'tests':
         return <TestsHelper />;
       case 'drugs':
@@ -62,7 +81,7 @@ const Index = () => {
         return <VaccinationCalendar />;
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Header 

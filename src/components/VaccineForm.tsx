@@ -30,6 +30,9 @@ const VaccineForm: React.FC<VaccineFormProps> = ({ existingVaccination, onSave, 
   const [notes, setNotes] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // Add new state for vaccine types
+  const [vaccineTypes, setVaccineTypes] = useState<any[]>([]);
+
   // Fill form with existing data if editing
   useEffect(() => {
     if (existingVaccination) {
@@ -64,6 +67,14 @@ const VaccineForm: React.FC<VaccineFormProps> = ({ existingVaccination, onSave, 
     }
   }, [existingVaccination]);
 
+  // Load vaccine types
+  useEffect(() => {
+    const types = localStorage.getItem('vaccine_types');
+    if (types) {
+      setVaccineTypes(JSON.parse(types));
+    }
+  }, []);
+
   // Validation function
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
@@ -96,6 +107,18 @@ const VaccineForm: React.FC<VaccineFormProps> = ({ existingVaccination, onSave, 
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle vaccine type selection
+  const handleVaccineTypeSelect = (selectedType: any) => {
+    if (!selectedType) return;
+    
+    const vaccineType = vaccineTypes.find(type => type.id === selectedType);
+    if (vaccineType) {
+      setVaccineType(vaccineType.name);
+      setTotalDoses(vaccineType.totalDoses);
+      setDaysInterval(vaccineType.daysInterval);
+    }
   };
 
   // Handle form submission
@@ -287,18 +310,23 @@ const VaccineForm: React.FC<VaccineFormProps> = ({ existingVaccination, onSave, 
           />
         </div>
 
-        {/* Vaccine Type */}
+        {/* Vaccine Type Selector */}
         <div className="space-y-2">
           <Label htmlFor="vaccineType">
             Vaccine Type <span className="text-red-500">*</span>
           </Label>
-          <Input
-            id="vaccineType"
-            value={vaccineType}
-            onChange={e => setVaccineType(e.target.value)}
-            placeholder="e.g., FMD Vaccine"
-            className={errors.vaccineType ? 'border-red-500' : ''}
-          />
+          <Select onValueChange={handleVaccineTypeSelect}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select vaccine type" />
+            </SelectTrigger>
+            <SelectContent>
+              {vaccineTypes.map((type) => (
+                <SelectItem key={type.id} value={type.id}>
+                  {type.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.vaccineType && (
             <p className="text-red-500 text-xs">{errors.vaccineType}</p>
           )}

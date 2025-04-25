@@ -1,4 +1,3 @@
-
 // Types for our data
 export interface Vaccination {
   id: string;
@@ -123,6 +122,10 @@ export const storage = {
   
   saveDrug: (drug: Drug) => {
     const drugs = storage.getDrugs();
+    if (!drug.routes || !Array.isArray(drug.routes)) {
+      drug.routes = []; // Initialize as empty array if undefined
+    }
+    
     const existingIndex = drugs.findIndex(d => d.id === drug.id);
     
     if (existingIndex >= 0) {
