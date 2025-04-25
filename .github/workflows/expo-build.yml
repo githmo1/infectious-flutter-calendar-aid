@@ -1,1 +1,33 @@
+name: Expo APK Build
 
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
+      - name: Install dependencies
+        run: |
+          npm install -g eas-cli
+          npm install --legacy-peer-deps
+          
+      - name: Build APK
+        run: |
+          eas build --platform android --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app.apk
+          path: *.apk
