@@ -1,5 +1,5 @@
-{
-  "appId": "com.example.myapp", // غيّر "com.example.myapp" إلى ID فريد (مثل com.اسمك.تطبيقك)
-  "appName": "MyApp", // اسم التطبيق الذي سيظهر على الهاتف
-  "webDir": "dist" // هذا المجلد سيتم بناؤه بواسطة Vite
+t{
+  "appId": "com.infectiousbutterfly.ahmed",
+  "appName": "infectious butterfly",
+  "webDir": "dist"
 }
