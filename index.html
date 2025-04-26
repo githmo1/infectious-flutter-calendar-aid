@@ -1,26 +1,934 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>infectious-flutter-calendar-aid</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infectious Butterfly</title>
+  <style>
+    /* Global Styles */
+    :root {
+      --butterfly: #9b87f5;
+      --butterfly-accent: #7E69AB;
+      --butterfly-dark: #6E59A5;
+      --background: #f8f9fa;
+      --text: #333;
+      --card-bg: #fff;
+      --border: #dee2e6;
+      --error: #dc3545;
+      --success: #28a745;
+      --warning: #ffc107;
+    }
 
-    <meta property="og:title" content="infectious-flutter-calendar-aid" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    body.dark-mode {
+      --background: #1a1a1a;
+      --text: #f8f9fa;
+      --card-bg: #2c2c2c;
+      --border: #444;
+    }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    }
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Header Styles */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--butterfly);
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .logo-butterfly {
+      font-size: 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav button:hover, nav button.active {
+      background-color: var(--butterfly-dark);
+    }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: box-shadow 0.3s, background-color 0.3s;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: var(--butterfly-dark);
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--card-bg);
+      color: var(--text);
+      transition: border-color 0.3s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--butterfly);
+      outline: none;
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-error {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s, transform 0.1s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background-color: var(--butterfly);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--butterfly-dark);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--butterfly);
+      color: var(--butterfly);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--butterfly);
+      color: white;
+    }
+
+    .btn-destructive {
+      background-color: var(--error);
+      color: white;
+    }
+
+    .btn-destructive:hover {
+      background-color: #c82333;
+    }
+
+    .btn-small {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+
+    /* Calendar Styles */
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    .calendar-day-name {
+      text-align: center;
+      font-weight: bold;
+      padding: 0.5rem;
+    }
+
+    .calendar-date {
+      height: 5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.5rem;
+      cursor: pointer;
+      background-color: var(--card-bg);
+      transition: background-color 0.3s;
+      position: relative;
+    }
+
+    .calendar-date:hover {
+      background-color: rgba(155, 135, 245, 0.1);
+    }
+
+    .calendar-date.other-month {
+      opacity: 0.5;
+    }
+
+    .calendar-date.today {
+      border-color: var(--butterfly);
+      font-weight: bold;
+    }
+
+    .calendar-date.selected {
+      background-color: rgba(155, 135, 245, 0.2);
+      box-shadow: 0 0 0 2px var(--butterfly);
+    }
+
+    .calendar-date-number {
+      display: block;
+      text-align: right;
+      margin-bottom: 0.25rem;
+    }
+
+    .calendar-event-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--butterfly);
+      border-radius: 50%;
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-backdrop.show .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--butterfly-dark);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    /* Checkbox and Radio Styles */
+    .checkbox-container, .radio-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1001;
+    }
+
+    .toast {
+      background-color: var(--card-bg);
+      border-left: 4px solid var(--butterfly);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 300px;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+    }
+
+    .toast.error {
+      border-left-color: var(--error);
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    /* Animal Chip Styles */
+    .animal-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .animal-chip {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      background-color: transparent;
+      border: 1px solid var(--butterfly);
+      color: var(--butterfly);
+    }
+
+    .animal-chip.selected {
+      background-color: var(--butterfly);
+      color: white;
+    }
+
+    /* Dose List Styles */
+    .dose-list {
+      margin-top: 1rem;
+    }
+
+    .dose-item {
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dose-item.administered {
+      background-color: rgba(40, 167, 69, 0.1);
+      border-color: var(--success);
+    }
+
+    /* List Items */
+    .list-item {
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--border);
+      background-color: var(--card-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+
+    .list-item:hover {
+      background-color: rgba(155, 135, 245, 0.05);
+    }
+
+    /* Search Styles */
+    .search-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem;
+      padding-left: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--card-bg);
+      color: var(--text);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .tab.active {
+      color: var(--butterfly);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--butterfly);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Misc Styles */
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-error {
+      color: var(--error);
+    }
+
+    .text-success {
+      color: var(--success);
+    }
+
+    .mt-1 {
+      margin-top: 0.5rem;
+    }
+
+    .mt-2 {
+      margin-top: 1rem;
+    }
+
+    .mb-1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 1rem;
+    }
+    
+    /* Section specific styles */
+    section {
+      padding: 2rem 0;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .credits {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-butterfly">🦋</div>
+      <span>Infectious Butterfly</span>
+    </div>
+    <nav>
+      <button id="vaccination-nav" class="active">Vaccination</button>
+      <button id="tests-nav">Tests</button>
+      <button id="drugs-nav">Drugs</button>
+      <button id="credits-nav">Credits</button>
+    </nav>
+    <button id="themeToggle">🌓</button>
+  </header>
+
+  <div class="container">
+    <!-- Vaccination Calendar Section -->
+    <section id="vaccination-section" class="active">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="vaccination-search" class="search-input" placeholder="Search by ID, vaccine, age, or species...">
+      </div>
+      
+      <div class="tabs">
+        <div class="tab active" id="calendar-tab">Calendar</div>
+        <div class="tab" id="vaccine-types-tab">Manage Vaccine Types</div>
+      </div>
+      
+      <div class="tab-content active" id="calendar-content">
+        <div class="card">
+          <div class="calendar-header">
+            <button id="prev-month" class="btn btn-outline">Previous</button>
+            <h2 id="current-month">April 2025</h2>
+            <button id="next-month" class="btn btn-outline">Next</button>
+          </div>
+          <div class="calendar-grid">
+            <div class="calendar-day-name">Sun</div>
+            <div class="calendar-day-name">Mon</div>
+            <div class="calendar-day-name">Tue</div>
+            <div class="calendar-day-name">Wed</div>
+            <div class="calendar-day-name">Thu</div>
+            <div class="calendar-day-name">Fri</div>
+            <div class="calendar-day-name">Sat</div>
+            <!-- Calendar dates are dynamically inserted here -->
+          </div>
+        </div>
+        
+        <div id="selected-date-vaccinations" class="mt-2 hidden">
+          <h3 id="selected-date-title">Vaccinations for April 26, 2025</h3>
+          <div id="selected-date-list">
+            <!-- Vaccination items for selected date are inserted here -->
+          </div>
+        </div>
+        
+        <div id="search-results" class="mt-2 hidden">
+          <h3>Search Results</h3>
+          <div id="search-results-list">
+            <!-- Search result items are inserted here -->
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button id="add-vaccination-btn" class="btn btn-primary">Add Vaccination</button>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="vaccine-types-content">
+        <div class="card">
+          <h2 class="card-title">Add Vaccine Type</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="vt-name" class="form-label">Vaccine Name *</label>
+              <input type="text" id="vt-name" class="form-input" placeholder="Enter vaccine name">
+              <div class="form-error" id="vt-name-error"></div>
+            </div>
+            
+            <div class="form-group">
+              <label for="vt-total-doses" class="form-label">Total Doses *</label>
+              <input type="number" id="vt-total-doses" class="form-input" min="1" value="1">
+              <div class="form-error" id="vt-total-doses-error"></div>
+            </div>
+            
+            <div class="form-group" id="vt-days-interval-group">
+              <label for="vt-days-interval" class="form-label">Days Between Doses *</label>
+              <input type="number" id="vt-days-interval" class="form-input" min="1" value="0">
+              <div class="form-error" id="vt-days-interval-error"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Target Animals *</label>
+            <div class="animal-chips" id="vt-target-animals">
+              <div class="animal-chip" data-animal="sheep">Sheep</div>
+              <div class="animal-chip" data-animal="goat">Goat</div>
+              <div class="animal-chip" data-animal="camel">Camel</div>
+              <div class="animal-chip" data-animal="horse">Horse</div>
+              <div class="animal-chip" data-animal="cat">Cat</div>
+              <div class="animal-chip" data-animal="dog">Dog</div>
+              <div class="animal-chip" data-animal="cow">Cow</div>
+              <div class="animal-chip" data-animal="buffalo">Buffalo</div>
+            </div>
+            <div class="form-error" id="vt-target-animals-error"></div>
+          </div>
+          
+          <button id="save-vaccine-type-btn" class="btn btn-primary mt-1 w-100">Save Vaccine Type</button>
+        </div>
+        
+        <div class="mt-2">
+          <h3>Saved Vaccine Types</h3>
+          <div id="vaccine-types-list">
+            <!-- Vaccine type items are inserted here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tests Helper Section -->
+    <section id="tests-section">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="tests-search" class="search-input" placeholder="Search by test name, procedure, or target animal...">
+      </div>
+      
+      <div class="card">
+        <h2 class="card-title">Add Test</h2>
+        <div class="form-group">
+          <label for="test-name" class="form-label">Test Name *</label>
+          <input type="text" id="test-name" class="form-input" placeholder="Enter test name">
+          <div class="form-error" id="test-name-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="test-procedure" class="form-label">Procedure *</label>
+          <textarea id="test-procedure" class="form-textarea" placeholder="Enter procedure steps (each line will be automatically numbered)"></textarea>
+          <div class="form-error" id="test-procedure-error"></div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="test-min-age" class="form-label">Minimum Age (years)</label>
+            <input type="number" id="test-min-age" class="form-input" min="0" step="0.5" value="0">
+          </div>
+          
+          <div class="form-group">
+            <label for="test-max-age" class="form-label">Maximum Age (years)</label>
+            <input type="number" id="test-max-age" class="form-input" min="0" step="0.5" value="20">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Target Animals *</label>
+          <div class="animal-chips" id="test-target-animals">
+            <div class="animal-chip" data-animal="sheep">Sheep</div>
+            <div class="animal-chip" data-animal="goat">Goat</div>
+            <div class="animal-chip" data-animal="camel">Camel</div>
+            <div class="animal-chip" data-animal="horse">Horse</div>
+            <div class="animal-chip" data-animal="cat">Cat</div>
+            <div class="animal-chip" data-animal="dog">Dog</div>
+            <div class="animal-chip" data-animal="cow">Cow</div>
+            <div class="animal-chip" data-animal="buffalo">Buffalo</div>
+          </div>
+          <div class="form-error" id="test-target-animals-error"></div>
+        </div>
+        
+        <button id="save-test-btn" class="btn btn-primary mt-1">Save Test</button>
+      </div>
+      
+      <div id="tests-results" class="mt-2 hidden">
+        <h3>Search Results</h3>
+        <div id="tests-results-list">
+          <!-- Test result items are inserted here -->
+        </div>
+      </div>
+      
+      <div class="mt-2">
+        <h3>Saved Tests</h3>
+        <div id="tests-list">
+          <!-- Test items are inserted here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Drug Calculator Section -->
+    <section id="drugs-section">
+      <div class="tabs">
+        <div class="tab active" id="calculator-tab">Calculator</div>
+        <div class="tab" id="drug-management-tab">Manage Drugs</div>
+      </div>
+      
+      <div class="tab-content active" id="calculator-content">
+        <div class="card">
+          <h2 class="card-title">Dose Calculator</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="calc-species" class="form-label">Animal Species *</label>
+              <select id="calc-species" class="form-select">
+                <option value="">Select species</option>
+                <option value="cow">Cow</option>
+                <option value="buffalo">Buffalo</option>
+                <option value="sheep">Sheep</option>
+                <option value="goat">Goat</option>
+                <option value="horse">Horse</option>
+                <option value="camel">Camel</option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="calc-weight" class="form-label">Weight (kg) *</label>
+              <input type="number" id="calc-weight" class="form-input" min="0.1" step="0.1">
+            </div>
+            
+            <div class="form-group">
+              <label for="calc-drug" class="form-label">Select Drug *</label>
+              <select id="calc-drug" class="form-select">
+                <option value="">Select drug</option>
+                <!-- Drugs are dynamically loaded here -->
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="calc-route" class="form-label">Administration Route</label>
+              <select id="calc-route" class="form-select">
+                <option value="">Select route</option>
+                <!-- Routes are dynamically loaded here -->
+              </select>
+            </div>
+          </div>
+          
+          <button id="calculate-dose-btn" class="btn btn-primary mt-1">Calculate Dose</button>
+          
+          <div id="calculation-result" class="mt-2 hidden">
+            <h3>Calculation Result</h3>
+            <div class="card">
+              <p>Animal: <span id="result-animal"></span></p>
+              <p>Weight: <span id="result-weight"></span> kg</p>
+              <p>Drug: <span id="result-drug"></span></p>
+              <p>Route: <span id="result-route"></span></p>
+              <p>Required Dose: <span id="result-dose"></span></p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mt-2">
+          <h2 class="card-title">Prescription Builder</h2>
+          <div id="prescription-drugs">
+            <!-- Prescription drugs are inserted here -->
+          </div>
+          <button id="add-prescription-drug-btn" class="btn btn-outline mt-1">Add Drug</button>
+          <button id="generate-prescription-btn" class="btn btn-primary mt-1">Generate Prescription</button>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="drug-management-content">
+        <div class="card">
+          <h2 class="card-title">Add Drug</h2>
+          <div class="form-group">
+            <label for="drug-name" class="form-label">Drug Name *</label>
+            <input type="text" id="drug-name" class="form-input" placeholder="Enter drug name">
+            <div class="form-error" id="drug-name-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Target Animals & Doses (mg/kg) *</label>
+            <div id="drug-animal-doses">
+              <div class="animal-dose-row mb-1">
+                <select class="form-select animal-select">
+                  <option value="">Select animal</option>
+                  <option value="sheep">Sheep</option>
+                  <option value="goat">Goat</option>
+                  <option value="camel">Camel</option>
+                  <option value="horse">Horse</option>
+                  <option value="cat">Cat</option>
+                  <option value="dog">Dog</option>
+                  <option value="cow">Cow</option>
+                  <option value="buffalo">Buffalo</option>
+                </select>
+                <input type="number" class="form-input dose-input" min="0" step="0.1" placeholder="Dose (mg/kg)">
+                <button class="btn btn-small btn-destructive remove-animal-dose-btn">✕</button>
+              </div>
+            </div>
+            <button id="add-animal-dose-btn" class="btn btn-outline btn-small">Add Animal</button>
+            <div class="form-error" id="drug-animal-doses-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Administration Routes *</label>
+            <div id="drug-routes">
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-sc" class="route-checkbox" value="s/c">
+                <label for="route-sc">Subcutaneous (s/c)</label>
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-im" class="route-checkbox" value="i/m">
+                <label for="route-im">Intramuscular (i/m)</label>
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-iv" class="route-checkbox" value="i/v">
+                <label for="route-iv">Intravenous (i/v)</label>
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-oral" class="route-checkbox" value="oral">
+                <label for="route-oral">Oral</label>
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-aural" class="route-checkbox" value="aural">
+                <label for="route-aural">Aural</label>
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="route-topical" class="route-checkbox" value="topical">
+                <label for="route-topical">Topical</label>
+              </div>
+            </div>
+            <div class="form-error" id="drug-routes-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="drug-concentration" class="form-label">Concentration (mg/ml) *</label>
+            <input type="number" id="drug-concentration" class="form-input" min="0" step="0.1" placeholder="Enter drug concentration">
+            <div class="form-error" id="drug-concentration-error
